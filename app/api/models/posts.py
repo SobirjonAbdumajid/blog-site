@@ -4,10 +4,7 @@ import enum
 from typing import List, Optional
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.api.models.users import User
-from app.api.models.categories import Category
-from app.api.models.tags import Tag
-from app.api.models.comments import Comment
+
 
 
 class PostStatus(enum.Enum):
