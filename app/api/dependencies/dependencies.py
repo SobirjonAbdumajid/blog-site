@@ -1,5 +1,3 @@
-# app/dependencies.py
-
 from app.core.database.config import SessionLocal
 from sqlalchemy.orm import Session
 
