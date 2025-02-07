@@ -1,10 +1,9 @@
 from app.core.models.base import Base
 from datetime import datetime
 import enum
-from typing import List, Optional
+from typing import Optional
 from sqlalchemy import ForeignKey, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class PostStatus(enum.Enum):
@@ -30,14 +29,14 @@ class Post(Base):
     created_at: Mapped[datetime] = mapped_column(default=func.now())
     updated_at: Mapped[datetime] = mapped_column(default=func.now(), onupdate=func.now())
 
-    # Relationships
-    author: Mapped["User"] = relationship(back_populates="posts")
-    categories: Mapped[List["Category"]] = relationship(
-        secondary="post_categories",
-        back_populates="posts"
-    )
-    tags: Mapped[List["Tag"]] = relationship(
-        secondary="post_tags",
-        back_populates="posts"
-    )
-    comments: Mapped[List["Comment"]] = relationship(back_populates="post")
+    # # Relationships
+    # author: Mapped["User"] = relationship(back_populates="posts")
+    # categories: Mapped[List["Category"]] = relationship(
+    #     secondary="post_categories",
+    #     back_populates="posts"
+    # )
+    # tags: Mapped[List["Tag"]] = relationship(
+    #     secondary="post_tags",
+    #     back_populates="posts"
+    # )
+    # comments: Mapped[List["Comment"]] = relationship(back_populates="post")

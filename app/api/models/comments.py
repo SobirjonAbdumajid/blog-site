@@ -1,8 +1,9 @@
 from app.core.models.base import Base
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from sqlalchemy import ForeignKey, Text, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
+
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -16,8 +17,7 @@ class Comment(Base):
     created_at: Mapped[datetime] = mapped_column(default=func.now())
     updated_at: Mapped[datetime] = mapped_column(default=func.now(), onupdate=func.now())
 
-    # Relationships
-    post: Mapped["Post"] = relationship(back_populates="comments")
-    user: Mapped["User"] = relationship(back_populates="comments")
-    replies: Mapped[List["Comment"]] = relationship()
-    parent: Mapped[Optional["Comment"]] = relationship(remote_side=[id])
+    # post: Mapped["Post"] = relationship(back_populates="comments")
+    # user: Mapped["User"] = relationship(back_populates="comments")
+    # replies: Mapped[List["Comment"]] = relationship()
+    # parent: Mapped[Optional["Comment"]] = relationship(remote_side=[id])

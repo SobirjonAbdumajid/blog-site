@@ -13,8 +13,8 @@ class Tag(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
 
-    # Relationships
-    posts: Mapped[List["Post"]] = relationship(
-        secondary="post_tags",
-        back_populates="tags"
-    )
+    # # Relationships
+    # posts: Mapped[List["Post"]] = relationship(
+    #     secondary="post_tags",
+    #     back_populates="tags"
+    # )

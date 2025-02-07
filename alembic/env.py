@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from app.core.database.config import Base
+from app.core.models.base import Base
 
 # Import all models to ensure they are registered with SQLAlchemy
 from app.api.models.users import User

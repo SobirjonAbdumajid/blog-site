@@ -108,7 +108,6 @@ async def register_user(user_request: UserRequest, db: db_dependency):
         bio=user_request.bio,
         avatar_url=user_request.avatar_url,
         is_admin=False,
-        is_active=True,
         created_at=datetime.now(timezone.utc)
     )
 

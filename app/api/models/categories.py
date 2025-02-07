@@ -1,9 +1,8 @@
 from app.core.models.base import Base
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from sqlalchemy import ForeignKey, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.api.models.posts import Post
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Category(Base):
@@ -16,10 +15,10 @@ class Category(Base):
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"))
     created_at: Mapped[datetime] = mapped_column(default=func.now())
 
-    # Relationships
-    posts: Mapped[List["Post"]] = relationship(
-        secondary="post_categories",
-        back_populates="categories"
-    )
-    children: Mapped[List["Category"]] = relationship()
-    parent: Mapped[Optional["Category"]] = relationship(remote_side=[id])
+    # # Relationships
+    # posts: Mapped[List["Post"]] = relationship(
+    #     secondary="post_categories",
+    #     back_populates="categories"
+    # )
+    # children: Mapped[List["Category"]] = relationship()
+    # parent: Mapped[Optional["Category"]] = relationship(remote_side=[id])
