@@ -157,9 +157,10 @@ async def make_user_admin(
     current_user: user_dependency
 ):
 
-    user = db.query(User).filter(User.id == user_id).first()
     if current_user.get("is_admin") is False:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have permission to make this request")
+
+    user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -169,3 +170,5 @@ async def make_user_admin(
     db.refresh(user)
 
     return {"message": f"User {user.username} is now an admin"}
+
+
