@@ -68,7 +68,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dic
         username: str = payload.get("username")
         user_id: int = payload.get("user_id")
         is_admin: bool = payload.get("is_admin", False)
-        token_type: str = payload.get("token_type")
 
         if username is None or user_id is None:
             raise credentials_exception
