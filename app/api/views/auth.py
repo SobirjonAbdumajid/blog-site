@@ -7,7 +7,9 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timezone
 from app.api.models.users import User
-from app.api.schemas.users import UserRequest
+from app.api.schemas.users import UserRequest, LoginResponse
+from sqlalchemy.orm import Session
+
 
 
 def get_db():
@@ -17,16 +19,18 @@ def get_db():
     finally:
         db.close()
 
-db_dependency = Annotated[get_db, Depends(get_db)]
+db_dependency = Annotated[Session, Depends(get_db)]
+
 
 
 router = APIRouter()
 
 SECRET_KEY = "edb5e3d67900e484d36233945c9777e44de164ee6c13e4317f250bab65cffae9"
 ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def authenticate_user(username: str, password: str, db):
@@ -66,7 +70,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dic
         is_admin: bool = payload.get("is_admin", False)
         token_type: str = payload.get("token_type")
 
-        if username is None or user_id is None or token_type != "access":
+        if username is None or user_id is None:
             raise credentials_exception
 
         return {
@@ -78,15 +82,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dic
         raise credentials_exception
 
 
-async def get_current_admin(
-    current_user: Annotated[dict, Depends(get_current_user)]
-) -> dict:
-    if not current_user.get("is_admin"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient permissions"
-        )
-    return current_user
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -108,6 +104,7 @@ async def register_user(user_request: UserRequest, db: db_dependency):
         bio=user_request.bio,
         avatar_url=user_request.avatar_url,
         is_admin=False,
+        is_active=True,
         created_at=datetime.now(timezone.utc)
     )
 
@@ -122,3 +119,53 @@ async def register_user(user_request: UserRequest, db: db_dependency):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error creating user"
         )
+
+
+@router.post("/login", response_model=LoginResponse)
+async def login(
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        db: db_dependency
+):
+    user = authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = generate_access_token(
+        username=user.username,
+        user_id=user.id,
+        is_admin=user.is_admin,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.id,
+        "username": user.username,
+        "is_admin": user.is_admin
+    }
+
+
+@router.put("/users/{user_id}/make-admin", status_code=status.HTTP_200_OK)
+async def make_user_admin(
+    user_id: int,
+    db: db_dependency,
+    current_user: user_dependency
+):
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if current_user.get("is_admin") is False:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have permission to make this request")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_admin = True
+    db.commit()
+    db.refresh(user)
+
+    return {"message": f"User {user.username} is now an admin"}
