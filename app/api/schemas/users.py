@@ -20,3 +20,11 @@ class LoginResponse(Token):
     user_id: int
     username: str
     is_admin: bool
+
+
+class UserUpdate(BaseModel):
+    username: str | None = None
+    email: str | None = None
+    full_name: str | None = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
