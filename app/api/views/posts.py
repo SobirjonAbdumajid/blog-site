@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import Annotated, List, Optional
 from app.core.database.config import SessionLocal
 from app.api.views.auth import get_current_user
-from app.api.schemas.posts import PostCreate, PostUpdate, PostResponse, PostStatus
+from app.api.schemas.posts import PostCreate, PostBase, PostResponse, PostStatus
 from datetime import datetime
 
 
@@ -70,8 +70,11 @@ async def create_post(
             detail="Post with this title already exists"
         )
 
+    # Create dictionary without slug field
+    post_data = post.dict()
+
     new_post = Post(
-        **post.dict(),
+        **post_data,  # Now doesn't contain slug
         slug=slug,
         author_id=current_user["user_id"]
     )
@@ -80,7 +83,6 @@ async def create_post(
     db.commit()
     db.refresh(new_post)
     return new_post
-
 
 @router.get("/posts/{slug}", response_model=PostResponse)
 async def get_post(db: db_dependency, slug: str):
@@ -95,7 +97,7 @@ async def update_post(
         db: db_dependency,
         current_user: user_dependency,
         slug: str,
-        post_update: PostUpdate
+        post_update: PostBase
 ):
     post = db.query(Post).filter(Post.slug == slug).first()
     if not post:
