@@ -36,24 +36,22 @@ def admin_required(current_user: user_dependency):
 
 @router.get("/posts", response_model=List[PostResponse])
 async def list_posts(
-        db: db_dependency,
+        db: Session = Depends(get_db),
         skip: int = 0,
         limit: int = 10,
-        category: Optional[str] = None,
-        tag: Optional[str] = None,
-        status: Optional[PostStatus] = PostStatus.published
+        input_status: Optional[PostStatus] = PostStatus.published
 ):
-    query = db.query(Post)
+    query = db.query(Post).filter(Post.status == input_status)
 
-    if category:
-        query = query.filter(Post.category == category)
-    if tag:
-        query = query.filter(Post.tags.contains([tag]))
-    if status:
-        query = query.filter(Post.status == status)
+    # Agar kategoriya va tag qo‘shish kerak bo‘lsa:
+    # if category:
+    #     query = query.filter(Post.category == category)
+    # if tag:
+    #     query = query.filter(Post.tags.contains([tag]))
 
     posts = query.offset(skip).limit(limit).all()
     return posts
+
 
 
 @router.post("/posts", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
@@ -73,16 +71,19 @@ async def create_post(
     # Create dictionary without slug field
     post_data = post.dict()
 
-    new_post = Post(
-        **post_data,  # Now doesn't contain slug
-        slug=slug,
-        author_id=current_user["user_id"]
-    )
+    try:
+        new_post = Post(
+            **post_data,  # Now doesn't contain slug
+            # slug=slug,
+            author_id=current_user["user_id"]
+        )
 
-    db.add(new_post)
-    db.commit()
-    db.refresh(new_post)
-    return new_post
+        db.add(new_post)
+        db.commit()
+        db.refresh(new_post)
+        return new_post
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Something went wrong")
 
 @router.get("/posts/{slug}", response_model=PostResponse)
 async def get_post(db: db_dependency, slug: str):

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.api.models.posts import Post
+from .posts import Post
 
 
 class Tag(Base):
@@ -13,8 +13,8 @@ class Tag(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
 
-    # # Relationships
-    # posts: Mapped[List["Post"]] = relationship(
-    #     secondary="post_tags",
-    #     back_populates="tags"
-    # )
+    # Relationships
+    posts: Mapped[List["Post"]] = relationship(
+        secondary="post_tags",
+        back_populates="tags"
+    )
