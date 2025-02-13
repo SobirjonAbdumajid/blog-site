@@ -7,7 +7,7 @@ from datetime import datetime
 class Subscriber(Base):
     __tablename__ = "subscribers"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    # id: Mapped[int] = mapped_column(primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True)
     subscribed_at: Mapped[datetime] = mapped_column(default=func.now())

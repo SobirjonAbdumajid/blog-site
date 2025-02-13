@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 class Category(Base):
     __tablename__ = "categories"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    # id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     slug: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     description: Mapped[Optional[str]] = mapped_column(Text)

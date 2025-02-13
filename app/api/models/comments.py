@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 class Comment(Base):
     __tablename__ = "comments"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    # id: Mapped[int] = mapped_column(primary_key=True, index=True)
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comments.id"), nullable=True)

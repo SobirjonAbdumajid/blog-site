@@ -5,13 +5,6 @@ from typing import Optional, List
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-# from .base import Base
-# from .enums import PostStatus
-from .categories import Category  # Import after base definition
-from .tags import Tag
-from .comments import Comment
-from .users import User
-
 
 class PostStatus(enum.Enum):
     draft = "draft"
@@ -22,7 +15,7 @@ class PostStatus(enum.Enum):
 class Post(Base):
     __tablename__ = "posts"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    # id: Mapped[int] = mapped_column(primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
     slug: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
@@ -47,13 +40,15 @@ class Post(Base):
     #     back_populates="posts"
     # )
     # comments: Mapped[List["Comment"]] = relationship(back_populates="post")
-    author: Mapped["User"] = relationship(back_populates="posts")
-    categories: Mapped[List["Category"]] = relationship(
-        secondary="post_categories",
-        back_populates="posts"
-    )
-    tags: Mapped[List["Tag"]] = relationship(
-        secondary="post_tags",
-        back_populates="posts"
-    )
-    comments: Mapped[List["Comment"]] = relationship(back_populates="post")
+
+
+    # author: Mapped["User"] = relationship(back_populates="posts")
+    # categories: Mapped[List["Category"]] = relationship(
+    #     secondary="post_categories",
+    #     back_populates="posts"
+    # )
+    # tags: Mapped[List["Tag"]] = relationship(
+    #     secondary="post_tags",
+    #     back_populates="posts"
+    # )
+    # comments: Mapped[List["Comment"]] = relationship(back_populates="post")
