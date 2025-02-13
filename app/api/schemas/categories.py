@@ -7,11 +7,6 @@ class CategoryBase(BaseModel):
     name: str
     description: Optional[str] = None
 
-class CategoryCreate(CategoryBase):
-    pass
-
-class CategoryUpdate(CategoryBase):
-    pass
 
 class CategoryResponse(CategoryBase):
     slug: str
