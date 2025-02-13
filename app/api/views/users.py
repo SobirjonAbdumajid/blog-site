@@ -31,7 +31,7 @@ def get_user_info(db: Session, user_id: int):
     return user
 
 
-@router.get("/users/me/", status_code=status.HTTP_200_OK)
+@router.get("/me/", status_code=status.HTTP_200_OK)
 async def get_current_user_info(current_user: user_dependency, db: db_dependency):
     user_data = get_user_info(db, current_user["user_id"])
     if not user_data:
@@ -39,7 +39,7 @@ async def get_current_user_info(current_user: user_dependency, db: db_dependency
     return user_data
 
 
-@router.put("/users/me/", status_code=status.HTTP_200_OK)
+@router.put("/me/", status_code=status.HTTP_200_OK)
 async def update_user_profile(
         current_user: user_dependency,
         db: db_dependency,
