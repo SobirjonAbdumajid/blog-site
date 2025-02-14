@@ -158,6 +158,5 @@ async def delete_post(
             status_code=403,
             detail="Not authorized to delete this post"
         )
-
     db.delete(post)
     db.commit()
