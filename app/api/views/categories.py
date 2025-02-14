@@ -1,6 +1,4 @@
-from http.client import HTTPException
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.api.models.categories import Category
 from app.api.models.posts import Post
 from typing import Annotated
@@ -39,7 +37,7 @@ async def make_category(
         current_user: user_dependency
 ):
     slug = generate_slug(category.name)
-    existing_category = db.query(Post).filter(Post.slug == slug).first()
+    existing_category = db.query(Category).filter(Category.slug == slug).first()
     if existing_category:
         raise HTTPException(
             status_code=400,
