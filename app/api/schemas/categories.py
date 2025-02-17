@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class CategoryBase(BaseModel):
-    name: str
+    name: Optional[str] = None
     description: Optional[str] = None
     parent_id: Optional[int] = None
 
