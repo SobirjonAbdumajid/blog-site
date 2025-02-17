@@ -11,5 +11,5 @@ class Category(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     slug: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     description: Mapped[Optional[str]] = mapped_column(Text)
-    parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"))
+    parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now())

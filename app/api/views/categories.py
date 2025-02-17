@@ -33,7 +33,6 @@ async def get_categories(db: db_dependency):
 async def make_category(
         db: db_dependency,
         category: CategoryBase,
-        admin: admin_required,
         current_user: user_dependency
 ):
     slug = generate_slug(category.name)
@@ -41,13 +40,13 @@ async def make_category(
     if existing_category:
         raise HTTPException(
             status_code=400,
-            detail="Post with this title already exists"
+            detail="Category with this title already exists"
         )
 
     category_data = category.dict()
 
     try:
-        new_category = Post(
+        new_category = Category(
             **category_data,
             slug=slug
         )

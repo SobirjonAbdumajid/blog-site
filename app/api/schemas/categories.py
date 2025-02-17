@@ -6,6 +6,7 @@ from datetime import datetime
 class CategoryBase(BaseModel):
     name: str
     description: Optional[str] = None
+    parent_id: Optional[int] = None
 
 
 class CategoryResponse(CategoryBase):
