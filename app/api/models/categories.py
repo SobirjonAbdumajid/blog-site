@@ -13,3 +13,8 @@ class Category(Base):
     description: Mapped[Optional[str]] = mapped_column(Text)
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
+
+    # posts: Mapped[List["Post"]] = relationship(
+    #     secondary="post_categories",
+    #     back_populates="categories"
+    # )

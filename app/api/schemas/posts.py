@@ -17,6 +17,7 @@ class PostBase(BaseModel):
     # slug: Optional[str] = None
     featured_image_url: Optional[str] = None
     status: PostStatus = PostStatus.draft
+    categories: List[int] = []
 
 
 class PostCreate(PostBase):

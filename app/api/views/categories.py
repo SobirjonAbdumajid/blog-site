@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.api.models.categories import Category
-from app.api.models.users import User
 from typing import Annotated
 from sqlalchemy.orm import Session
 from app.api.views.auth import get_current_user
 from app.api.schemas.categories import CategoryBase
 from app.core.database.config import SessionLocal
-from app.api.views.posts import admin_required, generate_slug
+from app.api.views.posts import generate_slug
 
 router = APIRouter()
 
@@ -40,6 +39,8 @@ async def make_category(
         category: CategoryBase,
         current_user: user_dependency
 ):
+    if not current_user['is_admin']:
+        raise HTTPException(status_code=403, detail="You do not have permission to perform this")
     slug = generate_slug(category.name)
     existing_category = db.query(Category).filter(Category.slug == slug).first()
     if existing_category:
@@ -63,7 +64,7 @@ async def make_category(
         raise HTTPException(status_code=500, detail=f"Something wend wrong {e}")
 
 
-@router.put("/{slug}")
+@router.put("/{slug}/")
 async def update_category(
         current_user: user_dependency,
         db: db_dependency,

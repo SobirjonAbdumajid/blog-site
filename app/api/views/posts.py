@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.api.models.posts import Post
+from app.api.models.categories import Category
 from sqlalchemy.orm import Session
 from typing import Annotated, List, Optional
 from app.core.database.config import SessionLocal
 from app.api.views.auth import get_current_user
 from app.api.schemas.posts import PostCreate, PostBase, PostResponse, PostStatus
 from datetime import datetime
-from app.api.models.users import User
 
 
 router = APIRouter()
@@ -25,7 +25,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 def generate_slug(name: str) -> str:
-    return name.lower().replace(" ", "-")[:50]
+    return name.lower().replace(" ", "-")
 
 
 def admin_required(current_user: user_dependency):
@@ -63,6 +63,14 @@ async def my_posts(
     return posts
 
 
+@router.get("/{slug}", response_model=PostResponse)
+async def get_post(db: db_dependency, slug: str):
+    post = db.query(Post).filter(Post.slug == slug).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
 @router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
 async def create_post(
         db: db_dependency,
@@ -77,14 +85,14 @@ async def create_post(
             detail="Post with this title already exists"
         )
 
-    # Create dictionary without slug field
-    post_data = post.dict()
-
     try:
+        categories = db.query(Category).filter(Category.id.in_(post.categories)).all()
+
         new_post = Post(
             slug=slug,
             author_id=current_user["user_id"],
-            **post_data,  # Now doesn't contain slug
+            category=categories,
+            **post.dict(exclude={"categories"}),  # Now doesn't contain slug
         )
 
         db.add(new_post)
@@ -93,14 +101,6 @@ async def create_post(
         return new_post
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
-
-
-@router.get("/{slug}", response_model=PostResponse)
-async def get_post(db: db_dependency, slug: str):
-    post = db.query(Post).filter(Post.slug == slug).first()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    return post
 
 
 @router.put("/{slug}", response_model=PostResponse)
@@ -121,6 +121,12 @@ async def update_post(
         )
 
     update_data = post_update.dict(exclude_unset=True)
+    if "categories" in update_data:
+        categories = db.query(Category).filter(
+            Category.id.in_(update_data["categories"])
+        ).all()
+        post.categories = categories
+        del update_data["categories"]
 
     if "title" in update_data:
         new_slug = generate_slug(update_data["title"])
@@ -136,7 +142,7 @@ async def update_post(
     for key, value in update_data.items():
         setattr(post, key, value)
 
-    post.updated_at = datetime.utcnow()
+    post.updated_at = datetime.now()
 
     db.commit()
     db.refresh(post)
