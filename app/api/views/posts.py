@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.api.models.posts import Post
+from app.api.models.post_category import PostCategory
 from app.api.models.categories import Category
 from sqlalchemy.orm import Session
 from typing import Annotated, List, Optional
@@ -91,10 +92,16 @@ async def create_post(
         new_post = Post(
             slug=slug,
             author_id=current_user["user_id"],
-            category=categories,
-            **post.dict(exclude={"categories"}),  # Now doesn't contain slug
+            # category=categories,
+            **post.dict(),  # Now doesn't contain slug
         )
 
+        new_post_category = PostCategory(
+            post_id=new_post.id,
+            category_id=categories
+        )
+
+        db.add(new_post_category)
         db.add(new_post)
         db.commit()
         db.refresh(new_post)
