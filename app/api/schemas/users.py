@@ -28,3 +28,8 @@ class UserUpdate(BaseModel):
     full_name: str | None = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
+
+
+class LoginBase(BaseModel):
+    username: str = None
+    password: str = None
