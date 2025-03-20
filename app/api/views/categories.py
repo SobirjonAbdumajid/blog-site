@@ -30,6 +30,8 @@ async def get_categories(
 
 ):
     categories = db.query(Category).offset(skip).limit(limit).all()
+    # if categories is None:
+    #     raise HTTPException()
     return categories
 
 
