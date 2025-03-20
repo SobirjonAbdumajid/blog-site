@@ -2,15 +2,16 @@ from datetime import timedelta
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.core.database.config import SessionLocal
-from typing import Annotated
+from typing import Annotated, Optional
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timezone
 from app.api.models.users import User
-from app.api.schemas.users import UserRequest, LoginResponse
+from app.api.schemas.users import UserRequest, LoginResponse, LoginBase, Token
 from sqlalchemy.orm import Session
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-
+security = HTTPBearer()
 
 def get_db():
     db = SessionLocal()
@@ -19,8 +20,8 @@ def get_db():
     finally:
         db.close()
 
-db_dependency = Annotated[Session, Depends(get_db)]
 
+db_dependency = Annotated[Session, Depends(get_db)]
 
 
 router = APIRouter()
@@ -44,19 +45,20 @@ def authenticate_user(username: str, password: str, db):
     return user
 
 
-def generate_access_token(username: str, user_id: int, is_admin: bool, expires_delta: timedelta):
-    encode = {
-        'username': username,
-        'user_id': user_id,
-        'is_admin': is_admin,
-        'type': 'access'
-    }
-    expire = datetime.now(timezone.utc) + expires_delta
-    encode.update({'exp': expire})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+def generate_access_token(data: dict, expires_delta: Optional[timedelta]):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now() + expires_delta
+    else:
+        expire = datetime.now() + timedelta(minutes=15)
+
+    to_encode.update([("exp", expire)])
+
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dict:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    token = credentials.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -79,6 +81,10 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> dic
         }
     except JWTError:
         raise credentials_exception
+
+
+def verify_password(plain_password, hashed_password):
+    return bcrypt_context.verify(plain_password, hashed_password)
 
 
 user_dependency = Annotated[dict, Depends(get_current_user)]
@@ -120,33 +126,26 @@ async def register_user(user_request: UserRequest, db: db_dependency):
         )
 
 
-@router.post("/login", response_model=LoginResponse)
+@router.post("/login", response_model=Token)
 async def login(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-        db: db_dependency
+        db: db_dependency,
+        form_data: LoginBase
 ):
-    user = authenticate_user(form_data.username, form_data.password, db)
-    if not user:
+    user = db.query(User).filter(User.username == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = generate_access_token(
-        username=user.username,
-        user_id=user.id,
-        is_admin=user.is_admin,
-        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        data={"username": user.username, 'user_id': user.id, "is_admin": user.is_admin},
+        expires_delta=access_token_expires
     )
 
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id,
-        "username": user.username,
-        "is_admin": user.is_admin
-    }
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.put("/users/{user_id}/make-admin", status_code=status.HTTP_200_OK)
