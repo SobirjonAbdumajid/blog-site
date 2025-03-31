@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Minimalist Blog{% endblock %}
+
+{% block content %}
+<article class="post-detail">
+  {% if post.featured_image_url %}
+  <img src="{{ post.featured_image_url }}" alt="{{ post.title }}" class="featured-image">
+  {% endif %}
+  
+  <header>
+    <div class="categories">
+      {% for category in post.categories %}
+      <a href="/categories/{{ category.slug }}" class="category-badge">{{ category.name }}</a>
+      {% endfor %}
+    </div>
+    
+    <h1>{{ post.title }}</h1>
+    
+    <div class="post-meta">
+      <div class="author">
+        {% if post.author.avatar_url %}
+        <img src="{{ post.author.avatar_url }}" alt="{{ post.author.username }}">
+        {% endif %}
+        <span>{{ post.author.username }}</span>
+      </div>
+      <span>{{ post.published_at.strftime('%b %d, %Y') }}</span>
+      <span>{{ post.view_count }} views</span>
+    </div>
+  </header>
+  
+  <div class="content">
+    {{ post.content|safe }}
+  </div>
+  
+  <footer>
+    <div class="tags">
+      <h3>Tags</h3>
+      <div class="tag-cloud">
+        {% for tag in post.tags %}
+        <a href="/tags/{{ tag.name }}" class="tag">#{{ tag.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="author-bio">
+      <div class="author-avatar">
+        {% if post.author.avatar_url %}
+        <img src="{{ post.author.avatar_url }}" alt="{{ post.author.username }}">
+        {% endif %}
+      </div>
+      <div>
+        <h3>{{ post.author.username }}</h3>
+        <p>{{ post.author.bio }}</p>
+      </div>
+    </div>
+  </footer>
+  
+  <section class="comment-section">
+    <h3>Comments ({{ comments|length }})</h3>
+    
+    {% if current_user.is_authenticated %}
+    <div class="comment-form">
+      <form action="/blog/{{ post.slug }}/comment" method="post">
+        <textarea name="content" placeholder="Leave your comment..." required></textarea>
+        <button type="submit">Post Comment</button>
+      </form>
+    </div>
+    {% endif %}
+    
+    <div class="comments">
+      {% for comment in comments %}
+      <div class="comment">
+        <div class="comment-meta">
+          <span>{{ comment.user.username }}</span>
+          <span>{{ comment.created_at.strftime('%b %d, %Y') }}</span>
+        </div>
+        <div class="comment-content">
+          {{ comment.content }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</article>
+{% endblock %}

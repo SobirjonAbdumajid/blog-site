@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Minimalist Blog{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="/" class="logo">Minimalist Blog</a>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/categories">Categories</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>About</h3>
+                    <p>A minimalist blog focused on clean, simple content.</p>
+                </div>
+
+                <div>
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/categories">Categories</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Subscribe</h3>
+                    <p>Stay updated with our newsletter</p>
+                    <form action="/subscribe" method="post" class="subscribe-form">
+                        <input type="email" name="email" placeholder="Your email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; {{ current_year }} Minimalist Blog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
