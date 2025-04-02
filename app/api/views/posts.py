@@ -36,6 +36,7 @@ def admin_required(current_user: user_dependency):
 
 # --- Endpoints ---
 
+
 @router.get("/all/", response_model=List[PostResponse])
 async def all_posts(
         db: db_dependency,
