@@ -3,7 +3,6 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import PostGrid from '../components/Blog/PostGrid';
-import Pagination from '../components/Common/Pagination';
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -25,7 +24,8 @@ const CategoryPage = () => {
       featuredImageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
       authorName: 'John Doe',
       publishedAt: '2023-06-15T00:00:00Z',
-      categories: [{ id: 1, name: 'Python', slug: 'python' }]
+      categories: [{ id: 1, name: 'Python', slug: 'python' }],
+      likesCount: 85
     },
     // More posts...
   ];
@@ -38,7 +38,6 @@ const CategoryPage = () => {
       </div>
       
       <PostGrid posts={posts} />
-      <Pagination currentPage={1} totalPages={3} baseUrl={`/categories/${category.slug}`} />
     </Layout>
   );
 };
