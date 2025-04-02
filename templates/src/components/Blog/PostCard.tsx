@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Badge } from '../ui/badge';
+import { Heart } from 'lucide-react';
 
 interface PostCardProps {
   id: number;
@@ -11,6 +13,7 @@ interface PostCardProps {
   authorName: string;
   publishedAt: string;
   categories: Array<{id: number; name: string; slug: string}>;
+  likesCount?: number;
 }
 
 const PostCard = ({ 
@@ -21,7 +24,8 @@ const PostCard = ({
   featuredImageUrl, 
   authorName, 
   publishedAt,
-  categories 
+  categories,
+  likesCount = 0
 }: PostCardProps) => {
   return (
     <div className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -40,9 +44,10 @@ const PostCard = ({
             <Link 
               key={category.id} 
               to={`/categories/${category.slug}`}
-              className="text-xs text-gray-500 hover:text-gray-700"
             >
-              {category.name}
+              <Badge variant="outline" className="text-xs">
+                #{category.name}
+              </Badge>
             </Link>
           ))}
         </div>
@@ -59,7 +64,16 @@ const PostCard = ({
         
         <div className="flex justify-between items-center text-sm text-gray-500">
           <span>{authorName}</span>
-          <span>{new Date(publishedAt).toLocaleDateString()}</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              <Heart 
+                size={16} 
+                className={`mr-1 ${likesCount > 0 ? 'text-red-500 fill-red-500' : ''}`} 
+              />
+              <span>{likesCount} likes</span>
+            </div>
+            <span>{new Date(publishedAt).toLocaleDateString()}</span>
+          </div>
         </div>
       </div>
     </div>
