@@ -242,7 +242,6 @@
 // export default BlogPage;
 
 import React from 'react';
-import Layout from '../components/Layout/Layout';
 import Layout_blog from '@/components/Layout/Layout_blog';
 import PostGrid from '../components/Blog/PostGrid';
 import CategoryList from '../components/Blog/CategoryList';
@@ -467,7 +466,7 @@ const BlogPage = () => {
       {/* <Navbar /> */}
       <Layout_blog>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Blog</h1>
+          {/* <h1 className="text-3xl font-bold mb-4">Blog</h1> */}
           <p className="text-gray-600">Browse our latest articles and tutorials</p>
         </div>
         
