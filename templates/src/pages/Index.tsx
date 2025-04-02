@@ -3,6 +3,7 @@ import React from 'react';
 import Layout from '../components/Layout/Layout';
 import PostGrid from '../components/Blog/PostGrid';
 import { Link } from 'react-router-dom';
+import { Card, CardContent } from '../components/ui/card';
 
 const Index = () => {
   // This data would be injected by Jinja2 from FastAPI backend
@@ -15,6 +16,7 @@ const Index = () => {
       featuredImageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c',
       authorName: 'John Doe',
       publishedAt: '2023-06-15T00:00:00Z',
+      likesCount: 120,
       categories: [
         { id: 1, name: 'Python', slug: 'python' },
         { id: 2, name: 'Web Development', slug: 'web-development' }
@@ -28,6 +30,7 @@ const Index = () => {
       featuredImageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31',
       authorName: 'Jane Smith',
       publishedAt: '2023-06-10T00:00:00Z',
+      likesCount: 85,
       categories: [
         { id: 2, name: 'Web Development', slug: 'web-development' },
         { id: 3, name: 'API', slug: 'api' }
@@ -41,12 +44,22 @@ const Index = () => {
       featuredImageUrl: 'https://images.unsplash.com/photo-1542903660-eedba2cda473',
       authorName: 'Mike Johnson',
       publishedAt: '2023-06-05T00:00:00Z',
+      likesCount: 64,
       categories: [
         { id: 4, name: 'Security', slug: 'security' },
         { id: 3, name: 'API', slug: 'api' }
       ]
     },
   ];
+
+  // const categories = [
+  //   { id: 1, name: 'Programming', slug: 'programming', color: 'bg-blue-100' },
+  //   { id: 2, name: 'Web Development', slug: 'web-development', color: 'bg-green-100' },
+  //   { id: 3, name: 'Data Science', slug: 'data-science', color: 'bg-purple-100' },
+  //   { id: 4, name: 'Machine Learning', slug: 'machine-learning', color: 'bg-yellow-100' },
+  //   { id: 5, name: 'DevOps', slug: 'devops', color: 'bg-red-100' },
+  //   { id: 6, name: 'Security', slug: 'security', color: 'bg-indigo-100' },
+  // ];
 
   return (
     <Layout>
@@ -56,6 +69,21 @@ const Index = () => {
             <h1 className="text-4xl font-bold mb-4">Minimalist Blog</h1>
             <p className="text-xl text-gray-600">Clean, simple, focused content</p>
           </div>
+          
+          {/* <div className="mb-10">
+            <h2 className="text-2xl font-semibold mb-6">Discover Categories</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {categories.map(category => (
+                <Link to={`/categories/${category.slug}`} key={category.id}>
+                  <Card className={`${category.color} hover:shadow-md transition-all`}>
+                    <CardContent className="p-6 text-center">
+                      <h3 className="font-semibold text-lg">{category.name}</h3>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div> */}
           
           <div className="mt-8">
             <div className="flex justify-between items-center mb-6">
