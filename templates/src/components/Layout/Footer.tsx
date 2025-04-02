@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Instagram, Linkedin, Github, Send } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,7 +12,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About section */}
           <div>
-            <h3 className="text-xl font-semibold mb-4">MiniBlog</h3>
+            <h3 className="text-xl font-semibold mb-4">Idrok</h3>
             <p className="text-gray-300 mb-4">
               A minimalist blog platform built with React and styled with Tailwind CSS.
             </p>
@@ -39,29 +40,28 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Subscribe section */}
+          {/* Follow Us section */}
           <div>
-            <h3 className="text-xl font-semibold mb-4">Subscribe</h3>
-            <p className="text-gray-300 mb-4">Stay updated with our newsletter</p>
-            <form className="flex flex-col sm:flex-row">
-              <input 
-                type="email" 
-                placeholder="Your email address"
-                className="bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 w-full"
-                required
-              />
-              <button 
-                type="submit"
-                className="bg-white text-gray-900 mt-2 sm:mt-0 sm:ml-2 px-4 py-2 rounded-md hover:bg-gray-200"
-              >
-                Subscribe
-              </button>
-            </form>
+            <h3 className="text-xl font-semibold mb-4">Follow Us</h3>
+            <div className="flex space-x-4 mb-4">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
+                <Instagram size={24} />
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
+                <Linkedin size={24} />
+              </a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
+                <Github size={24} />
+              </a>
+              <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white">
+                <Send size={24} />
+              </a>
+            </div>
           </div>
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>© {currentYear} MiniBlog. All rights reserved.</p>
+          <p>© {currentYear} Idrok. All rights reserved.</p>
         </div>
       </div>
     </footer>
