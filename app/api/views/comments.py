@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
 from fastapi import APIRouter
 from app.api.models.comments import Comment
+from app.api.dependencies.dependencies import user_dependency, db_dependency
 
 router = APIRouter(
     prefix="/comments",
@@ -10,7 +10,9 @@ router = APIRouter(
 
 
 @router.get("/")
-async def read_comments(db: ):
+async def read_comments(db: db_dependency):
+    comments = db.query(Comment).all()
+    return comments
 
 
 
