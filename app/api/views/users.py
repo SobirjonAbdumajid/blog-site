@@ -1,23 +1,9 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, status, HTTPException
 from app.api.models.users import User
-from app.api.views.auth import get_current_user
-from app.core.database.config import SessionLocal
-from typing import Annotated
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from app.api.schemas.users import UserUpdate
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-db_dependency = Annotated[Session, Depends(get_db)]
-user_dependency = Annotated[dict, Depends(get_current_user)]
+from app.api.dependencies.dependencies import db_dependency, user_dependency
 
 router = APIRouter()
 
