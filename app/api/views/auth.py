@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.core.database.config import SessionLocal
 from typing import Annotated, Optional
@@ -7,11 +7,13 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timezone
 from app.api.models.users import User
-from app.api.schemas.users import UserRequest, LoginResponse, LoginBase, Token
+from app.api.schemas.users import UserRequest, LoginBase, Token
 from sqlalchemy.orm import Session
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+
 security = HTTPBearer()
+
 
 def get_db():
     db = SessionLocal()
@@ -122,7 +124,7 @@ async def register_user(user_request: UserRequest, db: db_dependency):
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error creating user"
+            detail=f"Error creating user: {e}"
         )
 
 
@@ -156,7 +158,8 @@ async def make_user_admin(
 ):
 
     if current_user.get("is_admin") is False:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have permission to make this request")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="You do not have permission to make this request")
 
     user = db.query(User).filter(User.id == user_id).first()
 
@@ -168,5 +171,3 @@ async def make_user_admin(
     db.refresh(user)
 
     return {"message": f"User {user.username} is now an admin"}
-
-
