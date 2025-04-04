@@ -1,28 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 from app.api.models.posts import Post
 from app.api.models.post_category import PostCategory
 from app.api.models.categories import Category
-from sqlalchemy.orm import Session
-from typing import Annotated, List, Optional
-from app.core.database.config import SessionLocal
-from app.api.views.auth import get_current_user
+from typing import List, Optional
 from app.api.schemas.posts import PostCreate, PostBase, PostResponse, PostStatus
 from datetime import datetime
+from app.api.dependencies.dependencies import db_dependency, user_dependency
 
 
 router = APIRouter()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-db_dependency = Annotated[Session, Depends(get_db)]
-user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 def generate_slug(name: str) -> str:
