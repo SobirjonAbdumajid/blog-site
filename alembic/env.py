@@ -15,11 +15,16 @@ from app.api.models.categories import Category
 from app.api.models.post_category import PostCategory
 from app.api.models.subscribers import Subscriber
 from app.api.models.tags import Tag
+from app.core.settings import Settings, get_settings
 
+settings = get_settings()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+config.set_main_option('sqlalchemy.url', f"postgresql+psycopg2://{settings.POSTGRES_USER}:"
+                                         f"{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:"
+                                         f"{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
