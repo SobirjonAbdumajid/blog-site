@@ -10,7 +10,8 @@ settings = get_settings()
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
-    version=settings.PROJECT_VERSION
+    version=settings.PROJECT_VERSION,
+    docs_url='/'
 )
 
 app.include_router(users_router, prefix="/users", tags=["users"])
