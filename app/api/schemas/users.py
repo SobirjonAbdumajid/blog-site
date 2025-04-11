@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, constr
 from typing import Optional
 
 
@@ -9,7 +9,7 @@ class Token(BaseModel):
 
 class UserRequest(BaseModel):
     username: constr(min_length=3, max_length=50)
-    email: EmailStr
+    email: str
     password: constr(min_length=8)
     full_name: str
     bio: Optional[str] = None
