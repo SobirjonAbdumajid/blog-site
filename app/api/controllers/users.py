@@ -1,31 +1,20 @@
-from fastapi import APIRouter, status, HTTPException
-from app.api.dependencies.dependencies import db_dependency, user_dependency
+from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
+from app.api.repositories.users import get_user_by_id, update_user
 from app.api.schemas.users import UserUpdate
-from app.api.repositories.users import get_user_info, update_user_profile
-
-router = APIRouter()
 
 
-@router.get("/me/", status_code=status.HTTP_200_OK)
-async def get_current_user_info(current_user: user_dependency, db: db_dependency):
-    user_data = get_user_info(db, current_user["user_id"])
-    if not user_data:
-        return {"error": "User not found"}
-    return user_data
-
-
-@router.put("/me/", status_code=status.HTTP_200_OK)
-async def update_user_data(
-    current_user: user_dependency,
-    db: db_dependency,
-    user_update: UserUpdate
-):
-    user = get_user_info(db, current_user["user_id"])
+def get_user_info(db: Session, user_id: int):
+    user = get_user_by_id(db, user_id)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
 
-    updated_user = update_user_profile(db, user, user_update)
-    return updated_user
+
+def update_user_profile(db: Session, user_id: int, user_update: UserUpdate):
+    user = get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    update_data = user_update.dict(exclude_unset=True)
+    return update_user(db, user, update_data)
