@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.core.settings import get_settings
 from app.api.views.users import router as users_router
 from app.api.views.auth import router as auth_router
-from app.api.views.posts import router as posts_router
+from app.api.views.test import router as posts_router
 from app.api.views.categories import router as categories_router
 
 settings = get_settings()
