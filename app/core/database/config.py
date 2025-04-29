@@ -1,3 +1,4 @@
+# blog-site\app\core\database\config.py
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
