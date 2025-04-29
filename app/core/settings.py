@@ -1,3 +1,4 @@
+# blog-site\app\core\schemas\settings.py
 from functools import cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
