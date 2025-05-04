@@ -1,15 +1,8 @@
 from app.core.models.base import Base
 from datetime import datetime
-import enum
 from typing import Optional
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
-
-
-class PostStatus(enum.Enum):
-    draft = "draft"
-    published = "published"
-    archived = "archived"
 
 
 class Post(Base):
@@ -21,8 +14,8 @@ class Post(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     excerpt: Mapped[Optional[str]] = mapped_column(Text)
     featured_image_url: Mapped[Optional[str]] = mapped_column(String)
-    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    status: Mapped[PostStatus] = mapped_column(default=PostStatus.draft)
+    author_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    status: Mapped[str] = mapped_column(default="draft")
     is_featured: Mapped[bool] = mapped_column(default=False)
     view_count: Mapped[int] = mapped_column(default=0)
     published_at: Mapped[Optional[datetime]] = mapped_column()
