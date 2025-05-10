@@ -4,7 +4,7 @@ import googletrans
 from app.api.models.advisors import Advisor
 from app.api.dependencies.dependencies import db_dependency
 
-router = APIRouter(tags=["advisor"])
+router = APIRouter()
 
 
 @router.get("/advice")
