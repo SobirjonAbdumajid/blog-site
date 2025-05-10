@@ -7,24 +7,25 @@ from alembic import context
 from app.core.models.base import Base
 
 # Import all models to ensure they are registered with SQLAlchemy
+from app.core.settings import get_settings
+from app.api.models.advisors import Advisor
 from app.api.models.users import User
-from app.api.models.posts import Post
-from app.api.models.comments import Comment
-from app.api.models.post_tag import PostTag
 from app.api.models.categories import Category
 from app.api.models.post_category import PostCategory
-from app.api.models.subscribers import Subscriber
+from app.api.models.post_tag import PostTag
+from app.api.models.comments import Comment
+from app.api.models.posts import Post
 from app.api.models.tags import Tag
-from app.core.settings import Settings, get_settings
+from app.api.models.subscribers import Subscriber
 
 settings = get_settings()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-# config.set_main_option('sqlalchemy.url', f"postgresql+psycopg2://{settings.POSTGRES_USER}:"
-#                                          f"{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:"
-#                                          f"{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}")
+config.set_main_option('sqlalchemy.url', f"postgresql+psycopg2://{settings.POSTGRES_USER}:"
+                                         f"{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:"
+                                         f"{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
