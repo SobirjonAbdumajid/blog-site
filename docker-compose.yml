@@ -24,6 +24,6 @@ services:
       - '5432:5432'
     restart: always
     environment:
-      POSTGRES_DB: blog_db
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: postgres
