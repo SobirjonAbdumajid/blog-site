@@ -21,4 +21,4 @@ class Settings(BaseSettings):
 
 @cache
 def get_settings() -> Settings:
-    return Settings() # noqa
+    return Settings()
