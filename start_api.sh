@@ -1,2 +1,2 @@
 #!/bin/bash
-uvicorn app.server.app:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.server.app:app --reload --port 8000
