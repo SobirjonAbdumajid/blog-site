@@ -17,7 +17,6 @@ services:
         alembic upgrade head && \
         bash start_api.sh"
     ]
-
   db-postgres:
     image: postgres:17-alpine
     ports:
